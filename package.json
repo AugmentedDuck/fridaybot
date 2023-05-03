@@ -26,7 +26,12 @@
   },
   "homepage": "https://github.com/AugmentedDuck/fridaybot#readme",
   "dependencies": {
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.16.0",
     "discord.js": "^14.10.2",
-    "images-scraper": "^6.4.2"
+    "ffmpeg-static": "^5.1.0",
+    "images-scraper": "^6.4.2",
+    "yt-search": "^2.10.4",
+    "ytdl-core": "^4.11.4"
   }
 }
