@@ -1,2 +1,2 @@
 # fridaybot
- The sourcecode for the all loved fridaybot
+ The source code for the all loved fridaybot
