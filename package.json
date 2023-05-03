@@ -1,0 +1,31 @@
+{
+  "name": "fridaybot-2.0",
+  "version": "1.0.0",
+  "description": "The old bot, just with slash commands",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugmentedDuck/fridaybot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "discord",
+    "bot",
+    "javascript",
+    "slash",
+    "commands"
+  ],
+  "author": "AugmentedDuck",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AugmentedDuck/fridaybot/issues"
+  },
+  "homepage": "https://github.com/AugmentedDuck/fridaybot#readme",
+  "dependencies": {
+    "discord.js": "^14.10.2"
+  }
+}
