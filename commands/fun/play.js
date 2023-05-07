@@ -33,7 +33,7 @@ module.exports = {
     const videoFinder = async (query) => {
       const videoResult = await ytSearch(query)
       
-      return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+      return (videoResult.videos.length > 1) ? videoResult.videos[0] : videoResult.videos[0] = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     }
     
     const video = await videoFinder(searchWord)
