@@ -16,7 +16,7 @@ module.exports = {
 
     if(!diceSize) diceSize = 6 
 
-    var chosenNumber = parseInt(Math.random() * diceSize)
+    var chosenNumber = parseInt(Math.random() * diceSize) + 1
     await interaction.reply(`You rolled a ${chosenNumber}`);
   },
 };
