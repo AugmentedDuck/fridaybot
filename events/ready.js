@@ -1,15 +1,14 @@
 const { Events } = require('discord.js');
-const birthday = require('./birthday.js')
+const birthday = require('../.data/birthday.js')
 
 
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	execute(client) {
-		const todayDate = new Date().getDate();
 		const channelName = '876766059821150242'
 
-		let message = birthday.isToday(channelName, todayDate)
+		let message = birthday.isToday()
 
 		if (message != null) {
 			client.channels.cache.get(channelName)
