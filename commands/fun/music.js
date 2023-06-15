@@ -15,7 +15,7 @@ module.exports = {
 
   .addSubcommand(subcommand =>
 		subcommand.setName('play')
-			.setDescription('Put a song in queue')
+			.setDescription('Put a song in queue !WARNING SPOTIFY IS NOT FULLY SUPPORTED!')
 			.addChannelOption((option) =>
         option.setName('channel')
           .setDescription('Channel to join')
@@ -66,7 +66,7 @@ module.exports = {
             const streamMusic = await play.stream(queue[0].url, {discordPlayerCompatibility: true});
             const resource = createAudioResource(streamMusic.stream, { inputType : streamMusic.type })
             player.play(resource);
-            interaction.editReply(`Now playing: ***${queue[0].title}***, in ${voiceChannel}`);
+            interaction.editReply(`Now playing: ***${queue[0].title}***, in ${voiceChannel} \nQueue length: ${queue.length}`);
           }
         
           const connection = joinVoiceChannel({
@@ -81,9 +81,10 @@ module.exports = {
           
       const videoFinder = async (query) => {
         //const videoResult = await ytSearch(query)
+        
         if(play.yt_validate(query) == 'video' && query.startsWith('https')){
           const videoResult = await play.video_basic_info(query)
-          await interaction.editReply(`Added ***${videoResult.video_details.title}*** to queue\nQueue lenght: ${queue.length}`)
+          await interaction.editReply(`Added ***${videoResult.video_details.title}*** to queue\nQueue length: ${queue.length}`)
           
           return videoResult.video_details;
         } else if (play.yt_validate(query) == 'playlist' && query.startsWith('https')) {
@@ -95,7 +96,7 @@ module.exports = {
             count++
           }
 
-          await interaction.editReply(`Added ***${count}*** songs from **${playList.title}** to queue\nQueue lenght: ${queue.length}`)
+          await interaction.editReply(`Added ***${count}*** songs from **${playList.title}** to queue\nQueue length: ${queue.length}`)
           
           if(queue.length == count) {
             playNextSong();
@@ -105,24 +106,25 @@ module.exports = {
 
         } else if (play.sp_validate(query) == 'track') {
           const song = await play.spotify(query)
+          if (song == null) {
+            await interaction.editReply(`Spotify not working: <@535841235064324106> Update you API token!`)
+          }
           const videoResult = await videoFinder(song.name);
 
           return videoResult
         } else if (play.sp_validate(query) == 'album' || play.sp_validate(query) == 'playlist') {
           const playlist = await play.spotify(query)
           const playlistSongs = playlist.fetched_tracks.get('1');
-          console.log(playlistSongs[0].name);
 
           let count = 0
 
           for (let i = 0; i < playlistSongs.length; i++){
             let song = await videoFinder(playlistSongs[i].name)
-            console.log(song);
             queue.push(song)
             count++
           }
           
-          await interaction.editReply(`Added ***${count}*** songs from **${playlist.name}** to queue\nQueue lenght: ${queue.length}`)
+          await interaction.editReply(`Added ***${count}*** songs from **${playlist.name}** to queue\nQueue length: ${queue.length}`)
 
           if(queue.length == count) {
             playNextSong();
@@ -132,7 +134,7 @@ module.exports = {
         } else {
           const videoResult = await play.search(query, { limit: 1 });
 
-          await interaction.editReply(`Added ***${videoResult[0].title}*** to queue\nQueue lenght: ${queue.length}`)
+          await interaction.editReply(`Added ***${videoResult[0].title}*** to queue\nQueue length: ${queue.length}`)
           
           return videoResult[0];
         }
