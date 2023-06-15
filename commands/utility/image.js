@@ -20,8 +20,8 @@ module.exports = {
   async execute(interaction) {
     var searchWord = interaction.options.getString('query');
 
-    await interaction.reply(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
-    const results = await google.scrape(searchWord, 1);
-    await interaction.editReply(results[0].url)
+    await interaction.reply(`Due to high performance impact, the command **image** is not available`)//(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
+    //const results = await google.scrape(searchWord, 1);
+    //await interaction.editReply(results[0].url)
   },
 };
