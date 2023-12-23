@@ -41,9 +41,7 @@ module.exports = {
 
 			console.log(daysBetween,schoolDays, "days")
 
-			if (daysBetween == 100) {
-				client.channels.cache.get(channelName).send(`There is 100 days left to exams\n that is an estimated ${schoolDays}`)
-			} else if (daysBetween <= 10) {
+			if (daysBetween <= 10) {
 				client.channels.cache.get(channelName).send(`There is ${daysBetween} days left to exams\n that is an estimated ${schoolDays}`)
 			} else if (daysBetween < 100) {
 				if (daysBetween % 10 == 0) {
