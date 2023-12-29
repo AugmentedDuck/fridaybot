@@ -25,16 +25,17 @@ module.exports = {
 				}, 500);
 			}
 
+			alertToDays()
+		}
+
+		function alertToDays() {
 			let today = new Date()
 			let nowUNIX = Math.round(today.getTime() / 1000)
 			const examDateUNIX = 1716384300 
 			let timeToExamsSeconds = examDateUNIX - nowUNIX
 			const secondsInDay = 60 * 60 * 24
-			let timeToExamsDays = Math.round(timeToExamsSeconds / secondsInDay)
-			alertToDays(timeToExamsDays)
-		}
+			let daysBetween = Math.round(timeToExamsSeconds / secondsInDay)
 
-		function alertToDays(daysBetween) {
 			const channelName = '876766059821150242'
 
 			let schoolDays = Math.round( daysBetween * ( 5 / 7) - ( 37 * (daysBetween / 152)) ) 
@@ -42,11 +43,9 @@ module.exports = {
 			console.log(daysBetween,schoolDays, "days")
 
 			if (daysBetween <= 10) {
-				client.channels.cache.get(channelName).send(`There is ${daysBetween} days left to exams\n that is an estimated ${schoolDays}`)
-			} else if (daysBetween < 100) {
-				if (daysBetween % 10 == 0) {
-				client.channels.cache.get(channelName).send(`There is ${daysBetween} days left to exams\n that is an estimated ${schoolDays}`)
-				}
+				client.channels.cache.get(channelName).send(`There is ${daysBetween} days left to exams\n that is an estimated ${schoolDays} days`)
+			} else if (daysBetween % 10 == 0) {
+				client.channels.cache.get(channelName).send(`There is ${daysBetween} days left to exams\n that is an estimated ${schoolDays} days`)
 			}
 		}
 		
