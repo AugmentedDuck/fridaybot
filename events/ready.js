@@ -30,15 +30,16 @@ module.exports = {
 
 		function alertToDays() {
 			let today = new Date()
-			let nowUNIX = Math.round(today.getTime() / 1000)
-			const examDateUNIX = 1716384300 
+			let nowUNIX = Math.round(today.getTime())
+			const examDateUNIX = 1716384300000
+			console.log(nowUNIX)
 			let timeToExamsSeconds = examDateUNIX - nowUNIX
-			const secondsInDay = 60 * 60 * 24
-			let daysBetween = Math.round(timeToExamsSeconds / secondsInDay)
+			const millisecondsInDay = 60 * 60 * 24 * 1000
+			let daysBetween = Math.round(timeToExamsSeconds / millisecondsInDay)
 
 			const channelName = '876766059821150242'
 
-			let schoolDays = Math.round( daysBetween * ( 5 / 7) - ( 37 * (daysBetween / 152)) ) 
+			let schoolDays = Math.round( daysBetween * ( 5 / 7) - ( 28 * (daysBetween / 139)) ) 
 
 			console.log(daysBetween,schoolDays, "days")
 
