@@ -1,11 +1,11 @@
 const { SlashCommandBuilder } = require(`discord.js`)
-var Scraper = require('images-scraper');
+const { createApi } = require("unsplash-js");
 
-const google = new Scraper({
-  puppeteer: {
-    headless: false, //True takes to long :(
-  },
-});
+const { accessKey } = require('../../.data/unsplash.json');
+
+const serverApi = createApi({
+  accessKey: accessKey
+})
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,8 +20,32 @@ module.exports = {
   async execute(interaction) {
     var searchWord = interaction.options.getString('query');
 
-    await interaction.reply(`Due to high performance impact, the command **image** is not available`)//(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
-    //const results = await google.scrape(searchWord, 1);
-    //await interaction.editReply(results[0].url)
+    await interaction.reply(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
+    try {
+      let response = await serverApi.search.getPhotos({
+        query: searchWord,
+        page: 1,
+        perPage: 5
+      })
+    
+      let results = response.response.results;
+
+      console.log(results)
+
+      let imageID = results[Math.floor(Math.random() * 5)].id
+
+      let imageResponse = await serverApi.photos.get({
+        photoId:imageID
+      })
+
+      let imageURL = imageResponse.response.urls.regular;
+      let authorName = imageResponse.response.user.name;
+      let authorUsername = imageResponse.response.user.username;
+      
+      await interaction.editReply(`Image by ${authorName} aka ${authorUsername}\n${imageURL}`)
+    } catch (error) {
+      console.error(error)
+      await interaction.editReply(`An error occured with name ${error.name}`)
+    }
   },
 };

@@ -32,9 +32,11 @@
     "ffmpeg-static": "^5.1.0",
     "images-scraper": "^6.4.2",
     "libsodium-wrappers": "^0.7.11",
+    "node-fetch": "^3.3.2",
     "play-dl": "^1.9.6",
     "sequelize": "^6.31.1",
     "sqlite3": "^5.1.6",
+    "unsplash-js": "^7.0.19",
     "yt-search": "^2.10.4",
     "ytdl-core": "^4.11.4"
   }
