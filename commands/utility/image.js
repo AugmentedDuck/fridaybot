@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require(`discord.js`)
+const { SlashCommandBuilder, time } = require(`discord.js`)
 const { createApi } = require("unsplash-js");
 
 const { accessKey } = require('../../.data/unsplash.json');
@@ -7,10 +7,12 @@ const serverApi = createApi({
   accessKey: accessKey
 })
 
+var timeout = []
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName(`image`)
-    .setDescription(`search for an image`)
+    .setDescription(`search for an image, can be used every 10 minutes`)
     .addStringOption(option =>
       option.setName('query')
         .setDescription('The search word(s)')
@@ -19,6 +21,11 @@ module.exports = {
     
   async execute(interaction) {
     var searchWord = interaction.options.getString('query');
+
+    if (timeout.includes(interaction.user.id)) {
+      await interaction.reply(`This command is only available every 10 minutes`)
+      return 
+    }
 
     await interaction.reply(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
     try {
@@ -47,5 +54,12 @@ module.exports = {
       console.error(error)
       await interaction.editReply(`An error occured with name ${error.name}`)
     }
+
+    timeout.push(interaction.user.id)
+
+    setTimeout(() => {
+      timeout.shift();
+    }, 600000)
+
   },
 };
