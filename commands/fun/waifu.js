@@ -33,15 +33,17 @@ module.exports = {
         let nsfw = interaction.options.getBoolean('nsfw') ?? false
         let changed = false
 
-        if (!interaction.channel.nsfw && !private){
-            nsfw = false
-            changed = true
-        }
-
         if (private) {
             await interaction.deferReply({ ephemeral: true });
         } else {
             await interaction.deferReply();
+        }
+
+        if (!interaction.channel.nsfw && !private){
+            nsfw = false
+            changed = true
+            interaction.editReply("Can't show nsfw in this channel")
+            return
         }
 
         const queryParams = new URLSearchParams();
@@ -49,18 +51,18 @@ module.exports = {
         queryParams.set('included_tags', tag)
         let query = queryParams.toString()
         
-        if (tag != null) query = ""
+        
+        if (tag == null) query = ""
         
         const requestUrl = `${apiURL}?is_nsfw=${nsfw}&${query}`
 
         try {
             let request = await fetch(requestUrl)
             let data = await request.json()
-            console.log(data.images[0])
             let image = data.images[0].url
-            let author = data.images[0].artist.name
+            let author = data.images[0].artist?.name
 
-            await interaction.editReply(image)
+            interaction.editReply(image)
 
             if (private) {
                 await interaction.followUp({ content: `Author: ${author}`, ephemeral: true });        
