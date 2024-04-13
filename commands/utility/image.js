@@ -27,7 +27,7 @@ module.exports = {
       return 
     }
 
-    await interaction.reply(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
+    await interaction.deferReply(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
     try {
       let response = await serverApi.search.getPhotos({
         query: searchWord,

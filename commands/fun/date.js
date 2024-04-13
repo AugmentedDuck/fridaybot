@@ -6,7 +6,7 @@ module.exports = {
     .setDescription(`Sends amount of time to exams`),
 
   async execute(interaction) {
-    await interaction.reply(`Calculating`)
+    await interaction.deferReply()
     let today = new Date()
 		let nowUNIX = Math.round(today.getTime() / 1000)
 		const examDateUNIX = 1716384300 

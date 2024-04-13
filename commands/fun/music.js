@@ -57,7 +57,7 @@ module.exports = {
       voiceChannel = interaction.options.getChannel('channel')
       const searchWord = interaction.options.getString('query')
           
-      await interaction.reply(`Searching...`);
+      await interaction.deferReply();
           
       const playNextSong = async () => {
         if(queue.length !== 0) {
