@@ -10,7 +10,7 @@ module.exports = {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 
 		function runOncePerDay(){
-			const channelName = '876766059821150242'
+			const channelName = ''
 		
 			let message = birthday.isToday()
 		
@@ -26,7 +26,7 @@ module.exports = {
 			}
 		}
 		
-		runOncePerDay();	
+		//runOncePerDay();	
 	},
 };
 
