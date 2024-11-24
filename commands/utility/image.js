@@ -37,7 +37,7 @@ module.exports = {
     
       let results = response.response.results;
 
-      console.log(results)
+      //console.log(results)
 
       let imageID = results[Math.floor(Math.random() * 5)].id
 
