@@ -55,6 +55,12 @@ module.exports = {
   async execute(interaction) {    
     if (interaction.options.getSubcommand() === 'play') {
       voiceChannel = interaction.options.getChannel('channel')
+
+
+      //TEMP-----------------------------------------
+      await interaction.reply("Music is currently not working")
+      //TEMP-----------------------------------------
+      /*
       const searchWord = interaction.options.getString('query')
           
       await interaction.deferReply();
@@ -81,13 +87,13 @@ module.exports = {
           
       const videoFinder = async (query) => {
         //const videoResult = await ytSearch(query)
-        
-        if(play.yt_validate(query) == 'video' && query.startsWith('https')){
+
+        if(play.yt_validate(query) == 'video' && query.startsWith('https')){ //YOUTUBE VIDEO
           const videoResult = await play.video_basic_info(query)
           await interaction.editReply(`Added ***${videoResult.video_details.title}*** to queue\nQueue length: ${queue.length}`)
           
           return videoResult.video_details;
-        } else if (play.yt_validate(query) == 'playlist' && query.startsWith('https')) {
+        } else if (play.yt_validate(query) == 'playlist' && query.startsWith('https')) { //YOUTUBE PLAYLIST
           const playList = await play.playlist_info(query, { incomplete : true } );
           let count = 0
 
@@ -102,9 +108,9 @@ module.exports = {
             playNextSong();
           }
 
-          return { url: "https://www.youtube.com/watch?v=jhFDyDgMVUI", title: "return", needeToWork: true }
+          return { url: "https://www.youtube.com/watch?v=jhFDyDgMVUI", title: "return", needeToWork: true } //ONE SECOND EMPTY VIDEO
 
-        } else if (play.sp_validate(query) == 'track') {
+        } else if (play.sp_validate(query) == 'track') { //SPOTIFY TRACK
           const song = await play.spotify(query)
           if (song == null) {
             await interaction.editReply(`Spotify not working: <@535841235064324106> Update you API token!`)
@@ -112,7 +118,7 @@ module.exports = {
           const videoResult = await videoFinder(song.name);
 
           return videoResult
-        } else if (play.sp_validate(query) == 'album' || play.sp_validate(query) == 'playlist') {
+        } else if (play.sp_validate(query) == 'album' || play.sp_validate(query) == 'playlist') { //SPOTIFY ALBUM
           const playlist = await play.spotify(query)
           const playlistSongs = playlist.fetched_tracks.get('1');
 
@@ -130,8 +136,8 @@ module.exports = {
             playNextSong();
           }
 
-          return { url: "https://www.youtube.com/watch?v=jhFDyDgMVUI", title: "return", needeToWork: true }
-        } else {
+          return { url: "https://www.youtube.com/watch?v=jhFDyDgMVUI", title: "return", needeToWork: true } //ONE SECOND EMPTY VIDEO
+        } else { //SEARCH FOR VIDEO ON YOUTUBE
           const videoResult = await play.search(query, { limit: 1 });
 
           await interaction.editReply(`Added ***${videoResult[0].title}*** to queue\nQueue length: ${queue.length}`)
@@ -171,7 +177,7 @@ module.exports = {
 
         }
       })
-
+*/
     } else if (interaction.options.getSubcommand() === 'stop'){
       queue = [];
       player.stop();
