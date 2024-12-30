@@ -1,8 +1,6 @@
 const { SlashCommandBuilder, ChannelType } = require(`discord.js`)
-const ytdl = require('ytdl-core');
+const { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource, VoiceConnectionStatus } = require('@discordjs/voice');
 const play = require('play-dl');
-const ytSearch = require('yt-search');
-const { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 
 let queue = [];
 let voiceChannel;
@@ -52,21 +50,32 @@ module.exports = {
       ,
       //------------------------------------------------------------------------------------------------------------------
       
-  async execute(interaction) {    
+  async execute(interaction) {
+    
+    /////////////////////////////////////////////////////
+    //
+    // DOES NOT WORK ANYMORE
+    //
+    /////////////////////////////////////////////////////
+
+    await interaction.reply("This command is not working anymore")
+
+    /*
     if (interaction.options.getSubcommand() === 'play') {
       voiceChannel = interaction.options.getChannel('channel')
-
-
-      //TEMP-----------------------------------------
-      await interaction.reply("Music is currently not working")
-      //TEMP-----------------------------------------
-      /*
       const searchWord = interaction.options.getString('query')
           
       await interaction.deferReply();
           
       const playNextSong = async () => {
         if(queue.length !== 0) {
+          
+          const connection = joinVoiceChannel({
+            channelId: voiceChannel.id,
+            guildId: interaction.guildId,
+            adapterCreator: interaction.guild.voiceAdapterCreator
+          })
+
           if(queue[0]){
             //const stream = ytdl(queue[0].url, {filter: 'audioonly'})
             const streamMusic = await play.stream(queue[0].url, {discordPlayerCompatibility: true});
@@ -74,12 +83,6 @@ module.exports = {
             player.play(resource);
             interaction.editReply(`Now playing: ***${queue[0].title}***, in ${voiceChannel} \nQueue length: ${queue.length}`);
           }
-        
-          const connection = joinVoiceChannel({
-            channelId: voiceChannel.id,
-            guildId: interaction.guildId,
-            adapterCreator: interaction.guild.voiceAdapterCreator
-          })
               
           const subscribtion = connection.subscribe(player);
         }
@@ -177,7 +180,7 @@ module.exports = {
 
         }
       })
-*/
+      
     } else if (interaction.options.getSubcommand() === 'stop'){
       queue = [];
       player.stop();
@@ -271,6 +274,6 @@ module.exports = {
       }
       await interaction.editReply("Shuffled the queue");
     }
-
+    */
   },
 };

@@ -26,6 +26,14 @@ module.exports = {
     .addBooleanOption(option =>
         option.setName('nsfw')
             .setDescription('Should it be nsfw?')),
+
+
+    /////////////////////////////////////////////////////////
+    //
+    // INTERACTION HANDLER
+    //
+    /////////////////////////////////////////////////////////
+    
     async execute(interaction) {
         const apiURL = 'https://api.waifu.im/search'
         const tag = interaction.options.getString('tag') ?? null

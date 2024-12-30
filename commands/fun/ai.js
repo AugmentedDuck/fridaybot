@@ -25,16 +25,6 @@ module.exports = {
                 option.setName('prompt')
                       .setDescription('Prompt for diffusion model')
                       .setRequired(true))
-            
-/*             .addStringOption((option) => 
-                option.setName('model')
-                      .setDescription('What diffusion model')
-                      .setRequired(true)
-                      .addChoices(
-                        { name: 'Realistic', value: 'epicphoto'}, //TO-DO
-                        { name: 'Anime', value: 'abstract'}, //TO-DO
-                    )) 
-*/
 
             .addStringOption((option) => 
                 option.setName('negative-prompt')
@@ -57,10 +47,15 @@ module.exports = {
                       .setDescription('Seed for generaton (Leave blank for random)')
                       .setMinValue(-1))
     )
-      ,
-      //------------------------------------------------------------------------------------------------------------------
-      
+      ,    
   async execute(interaction) {    
+
+    ////////////////////////////////////////////////////////
+    //
+    // !! AI TEXT RESPONSE !! USES OLLAMA !!
+    //
+    ////////////////////////////////////////////////////////
+
     if (interaction.options.getSubcommand() === 'response') {
       const API_URL = "http://localhost:11434/api/generate";
       let prompt = interaction.options.getString('prompt');
@@ -90,6 +85,13 @@ module.exports = {
         await interaction.editReply("Something went wrong");
       }
 
+
+    ////////////////////////////////////////////////////////
+    //
+    // !! AI PICTURE GENERATION !! USES STABLE DIFFUSION !!
+    //
+    ////////////////////////////////////////////////////////
+    
     } else if (interaction.options.getSubcommand() === 'picture'){
       const API_URL = "http://127.0.0.1:7860/sdapi/v1/txt2img"
       let prompt = interaction.options.getString('prompt');

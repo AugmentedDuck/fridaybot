@@ -27,7 +27,7 @@ module.exports = {
       return 
     }
 
-    await interaction.deferReply(`Searching for ${searchWord}...`); //Send a response to Discord !! NEEDED FOR TIMEOUT DO NOT REMOVE !!
+    await interaction.deferReply(`Searching for ${searchWord}...`);
     try {
       let response = await serverApi.search.getPhotos({
         query: searchWord,
@@ -36,8 +36,6 @@ module.exports = {
       })
     
       let results = response.response.results;
-
-      //console.log(results)
 
       let imageID = results[Math.floor(Math.random() * 5)].id
 
