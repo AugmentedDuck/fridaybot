@@ -33,6 +33,7 @@
     "play-dl": "^1.9.7",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7",
-    "unsplash-js": "^7.0.19"
+    "unsplash-js": "^7.0.19",
+    "youtube-dl-exec": "^3.0.10"
   }
 }
