@@ -51,49 +51,55 @@ module.exports = {
     // EXECUTE INTERACTION
     //
     //////////////////////////////////////////////////////////////
+    player.on(AudioPlayerStatus.Idle, async () => {
+      let isNew = false
+      
+      try {
+        fs.rmSync('./currentSong.mp3');
+        isNew = true
+      } catch (error) {
+        isNew = false
+      }
+
+      if (isNew) {
+        let response = queue.shift();
+        console.log(queue)
+        if (response != undefined) {
+          playSong();
+        }
+      }
+    });
+
+    async function playSong() {
+      console.log("Playing song")
+      const stream = await ytdl(queue[0], {extractAudio: true, audioFormat: 'mp3', output: 'currentSong'});
+
+      const resource = createAudioResource('./currentSong.mp3', { inputType: StreamType.Arbitrary });
+
+      player.play(resource);
+      
+      
+      const connection = joinVoiceChannel({
+        channelId: voiceChannel.id,
+        guildId: interaction.guildId,
+        adapterCreator: interaction.guild.voiceAdapterCreator
+      });
+
+      const subscribe = connection.subscribe(player);
+    }
 
     if (interaction.options.getSubcommand() === 'play') {
+    
+      //////////////////////////////////////////////////////////////////////////
+      //
+      // ADD A SONG TO THE QUEUE
+      //
+      //////////////////////////////////////////////////////////////////////////
+
       voiceChannel = interaction.options.getChannel('channel')
       const searchWord = interaction.options.getString('query')
 
       await interaction.deferReply();
-
-      player.on(AudioPlayerStatus.Idle, async () => {
-        let isNew = false
-        
-        try {
-          fs.rmSync('./currentSong.mp3');
-          isNew = true
-        } catch (error) {
-          isNew = false
-        }
-
-        if (isNew) {
-          let response = queue.shift();
-          console.log(queue)
-          if (response != undefined) {
-            playSong();
-          }
-        }
-      });
-
-      async function playSong() {
-        console.log("Playing song")
-        const stream = await ytdl(queue[0], {extractAudio: true, audioFormat: 'mp3', output: 'currentSong'});
-
-        const resource = createAudioResource('./currentSong.mp3', { inputType: StreamType.Arbitrary });
-
-        player.play(resource);
-        
-        
-        const connection = joinVoiceChannel({
-          channelId: voiceChannel.id,
-          guildId: interaction.guildId,
-          adapterCreator: interaction.guild.voiceAdapterCreator
-        });
-
-        const subscribe = connection.subscribe(player);
-      }
 
       async function addToQueue() {
         if (searchWord != undefined || searchWord != '') {
@@ -131,7 +137,6 @@ module.exports = {
 
       queue = [];
       player.stop();
-      await interaction.reply("Stopped playing")
       
       const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
@@ -140,8 +145,11 @@ module.exports = {
       })
       
       const subscribtion = connection.subscribe(player);
-
+      
       subscribtion.unsubscribe();
+      
+      fs.rmSync('./currentSong.mp3');
+      await interaction.reply("Stopped playing")
 
     } else if (interaction.options.getSubcommand() === 'clear'){
 
@@ -181,12 +189,14 @@ module.exports = {
 
       if (player.state.status === AudioPlayerStatus.Playing) {
         await interaction.reply("Skipping song...")
-        
+        queue.shift();
+        fs.rmSync('./currentSong.mp3');
         player.stop();
-          
+
       } else {
         await interaction.reply("No song is playing")
       } 
+
     } else if (interaction.options.getSubcommand() === 'queue'){
       
       //////////////////////////////////////////////////////////////////////////
