@@ -1,8 +1,10 @@
 const { SlashCommandBuilder, ChannelType } = require(`discord.js`)
 const { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource, VoiceConnectionStatus, StreamType } = require('@discordjs/voice');
 const ytdl = require('youtube-dl-exec');
+const ytSearch = require('yt-search');
 const fs = require('fs');
-const spotify = require('spotifydl-core').default;
+const spotify = require('spotifydl-core').default
+
 const credentials = require('../../.data/spotifysecrets.json');
 
 let queue = [];
@@ -68,24 +70,23 @@ module.exports = {
       }
 
       if (isNew) {
-        let response = queue.shift();
-        if (response != undefined) {
+        queue.shift();
+        if (queue.length > 0) {
           playSong();
         }
       }
     });
 
     async function playSong() {
-      console.log("Playing song")
-
-      if (queue[0].match(regexYT)) {
-        const stream = await ytdl(queue[0], {extractAudio: true, audioFormat: 'mp3', output: 'currentSong'});
-        await interaction.editReply("Playing song...")
-        
-      } else if (queue[0].match(regexSpotify)) {
-        console.log(queue[0])
-        const data = await spotifydl.getTrack(queue[0]);
-        const song = await spotifydl.downloadTrack(data, "currentSong.mp3");
+      if (queue[0]) { 
+        let query = queue[0];
+        if (queue[0].match(regexSpotify)) {
+          const spotifySong = await spotifydl.getTrack(queue[0]);
+          query = `${spotifySong.name} - ${spotifySong.artists[0].name}`;
+        }
+        const ytVersion = await ytSearch(query);
+        const stream = await ytdl(ytVersion.videos[0].url, {extractAudio: true, audioFormat: 'mp3', output: 'currentSong'});
+        await interaction.followUp("Playing **" + ytVersion.videos[0].title + "** by **" + ytVersion.videos[0].author.name + "**")
       }
       
       const resource = createAudioResource('./currentSong.mp3', { inputType: StreamType.Arbitrary });
@@ -115,21 +116,12 @@ module.exports = {
       await interaction.deferReply();
 
       async function addToQueue() {
-        if (searchWord != undefined || searchWord != '') {
-          if (searchWord.match(regexYT) || searchWord.match(regexSpotify)) {
-            queue.push(searchWord)
-
-            if (queue.length == 1) {
-              playSong();
-            } else {
-              await interaction.editReply("Added to queue")
-              console.log(queue)
-            }
-
-          } else {
-            await interaction.editReply("NOT A VALID LINK")
-            return
-          }
+        queue.push(searchWord)  
+        
+        if (queue.length == 1) {
+          playSong();
+        } else {
+          await interaction.editReply("Added to queue")
         }
       }
 
@@ -153,10 +145,10 @@ module.exports = {
       })
       
       const subscribtion = connection.subscribe(player);
-      
       subscribtion.unsubscribe();
       
       player.stop();
+
       fs.rmSync('./currentSong.mp3');
       await interaction.reply("Stopped playing")
 
@@ -199,7 +191,6 @@ module.exports = {
       if (player.state.status === AudioPlayerStatus.Playing) {
         await interaction.reply("Skipping song...")
         queue.shift();
-        fs.rmSync('./currentSong.mp3');
         player.stop();
 
       } else {
@@ -223,7 +214,7 @@ module.exports = {
 
       await interaction.reply("Counting...")
       for (let i = 0; i < queue.length; i++) {
-        queueString += (i+1) + ") **" + queue[i].title + "**\n"
+        queueString += (i+1) + ") **" + queue[i] + "**\n"
       }
 
       await interaction.editReply("The current queue is:\n" + queueString);

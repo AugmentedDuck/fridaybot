@@ -35,6 +35,7 @@
     "spotifydl-core": "^0.2.0",
     "sqlite3": "^5.1.7",
     "unsplash-js": "^7.0.19",
-    "youtube-dl-exec": "^3.0.10"
+    "youtube-dl-exec": "^3.0.10",
+    "ytdl-core": "npm:@distube/ytdl-core@^4.15.8"
   }
 }
