@@ -32,6 +32,7 @@
     "node-fetch": "^3.3.2",
     "play-dl": "^1.9.7",
     "sequelize": "^6.37.5",
+    "spotifydl-core": "^0.2.0",
     "sqlite3": "^5.1.7",
     "unsplash-js": "^7.0.19",
     "youtube-dl-exec": "^3.0.10"
