@@ -2,10 +2,15 @@ const { SlashCommandBuilder, ChannelType } = require(`discord.js`)
 const { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource, VoiceConnectionStatus, StreamType } = require('@discordjs/voice');
 const ytdl = require('youtube-dl-exec');
 const fs = require('fs');
+const spotify = require('spotifydl-core').default;
+const credentials = require('../../.data/spotifysecrets.json');
 
 let queue = [];
 let voiceChannel;
 let player = createAudioPlayer();
+const spotifydl = new spotify(credentials);
+const regexYT = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
+const regexSpotify = /(?:https?:\/\/)?(?:www\.)?(?:open\.spotify\.com\/track\/)([a-zA-Z0-9]{22})/g;
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -51,6 +56,7 @@ module.exports = {
     // EXECUTE INTERACTION
     //
     //////////////////////////////////////////////////////////////
+
     player.on(AudioPlayerStatus.Idle, async () => {
       let isNew = false
       
@@ -63,7 +69,6 @@ module.exports = {
 
       if (isNew) {
         let response = queue.shift();
-        console.log(queue)
         if (response != undefined) {
           playSong();
         }
@@ -72,10 +77,18 @@ module.exports = {
 
     async function playSong() {
       console.log("Playing song")
-      const stream = await ytdl(queue[0], {extractAudio: true, audioFormat: 'mp3', output: 'currentSong'});
 
+      if (queue[0].match(regexYT)) {
+        const stream = await ytdl(queue[0], {extractAudio: true, audioFormat: 'mp3', output: 'currentSong'});
+        await interaction.editReply("Playing song...")
+        
+      } else if (queue[0].match(regexSpotify)) {
+        console.log(queue[0])
+        const data = await spotifydl.getTrack(queue[0]);
+        const song = await spotifydl.downloadTrack(data, "currentSong.mp3");
+      }
+      
       const resource = createAudioResource('./currentSong.mp3', { inputType: StreamType.Arbitrary });
-
       player.play(resource);
       
       
@@ -103,14 +116,10 @@ module.exports = {
 
       async function addToQueue() {
         if (searchWord != undefined || searchWord != '') {
-          // Check if the search word is a youtube link
-          const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
-          const match = searchWord.match(regex);
-          if (match) {
+          if (searchWord.match(regexYT) || searchWord.match(regexSpotify)) {
             queue.push(searchWord)
 
             if (queue.length == 1) {
-              await interaction.editReply("Playing song...")
               playSong();
             } else {
               await interaction.editReply("Added to queue")
@@ -118,7 +127,7 @@ module.exports = {
             }
 
           } else {
-            await interaction.editReply("NOT A VALID YOUTUBE LINK")
+            await interaction.editReply("NOT A VALID LINK")
             return
           }
         }
@@ -136,7 +145,6 @@ module.exports = {
 
 
       queue = [];
-      player.stop();
       
       const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
@@ -148,6 +156,7 @@ module.exports = {
       
       subscribtion.unsubscribe();
       
+      player.stop();
       fs.rmSync('./currentSong.mp3');
       await interaction.reply("Stopped playing")
 
